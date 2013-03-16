@@ -21,7 +21,9 @@ The --with-libz example shows how to pull in the libz from iOS instead of compil
 You should run this script once for each target + arch compbination you need. For example
 
 device + armv7
+
 device + armv7s
+
 simulator + i386
 
 Once all the libraries for each target have been built, put them into a fat lib using lipo. Example:
