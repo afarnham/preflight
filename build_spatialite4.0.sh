@@ -126,8 +126,6 @@ export CXXFLAGS="${CFLAGS}"
 export CPP="${platform_bin_dir}/llvm-cpp-${GCC_VERSION}"
 export CXXCPP="${CPP}"
 
-make clean || exit
-
 ./configure \
     --prefix="${prefix}" \
     --host="${arch}-apple-darwin" \
