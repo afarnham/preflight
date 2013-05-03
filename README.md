@@ -37,10 +37,11 @@ The script omits FreeXL and GEOS. I did not need FreeXL so did not worry about c
 
 I had to change lines 72-78 of src/gaiaaux/gg_utf8.c and lines 74-80 of src/gaiggeo/gg_shape.c to look like this (i.e. ensure localcharset.h is not used)
 
-/*#if defined(__APPLE__) || defined(__ANDROID__)
-#include <iconv.h>
-#include <localcharset.h>
-#else*/ /* neither Mac OsX nor Android */
-#include <iconv.h>
-#include <langinfo.h>
-//#endif
+
+    //#if defined(__APPLE__) || defined(__ANDROID__)
+    //#include <iconv.h>
+    //#include <localcharset.h>
+    //#else /* neither Mac OsX nor Android */
+    #include <iconv.h>
+    #include <langinfo.h>
+    //#endif
