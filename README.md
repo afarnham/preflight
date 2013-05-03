@@ -18,18 +18,13 @@ Building libGeoTiff
 Options
 -------
 
-Valid targets are "simulator" and "device"
--a for ARCH (e.g. '-a i386'). Valid values are i386, armv7, armv7s and anything else Apple puts out. 
+Valid targets are "simulator" and "device".
 
-The --with-libz option shows how to pull in the libz from iOS instead of compiling your own
+Use the option "-a" to change the target architecture (e.g. '-a i386'). Valid values are i386, armv7, armv7s and anything else Apple supports. 
 
-You should run this script once for each target + arch compbination you need. For example
+The --with-libz option in the example above shows how to pull in the libz from iOS instead of compiling your own
 
-device + armv7
-
-device + armv7s
-
-simulator + i386
+You should run this script once for each target and archictecture compbination you need. Most people will want device + armv7, device + armv7s, and simulator + i386 
 
 Once all the libraries for each target have been built, put them into a fat lib using lipo. Example:
 
