@@ -34,7 +34,7 @@ Once all the libraries for each target have been built, put them into a fat lib 
 Building spatialite 4.0.0
 -------------------------
 
-The script omits FreeXL and GEOS. I did not need FreeXL so did not worry about compiling it and the GEOS license is not compatible with closed source apps on the iPhone since LGPL requires dynamic linking.
+The script omits FreeXL and GEOS. 
 
 I had to change lines 72-78 of src/gaiaaux/gg_utf8.c and lines 74-80 of src/gaiggeo/gg_shape.c to look like this (i.e. ensure localcharset.h is not used)
 
