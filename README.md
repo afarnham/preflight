@@ -26,7 +26,7 @@ The --with-libz option in the example above shows how to pull in the libz from i
 
 You should run this script once for each target and archictecture compbination you need. Most people will want device + armv7, device + armv7s, and simulator + i386 
 
-Once all the libraries for each target have been built, put them into a fat lib using lipo. Example:
+Once all the libraries for each target have been built, put them into a fat lib using lipo.
 
     lipo i386/iPhoneSimulator.platform/iPhoneSimulator6.1.sdk/lib/libtiff.a armv7/iPhoneOS.platform/iPhoneOS6.1.sdk/lib/libtiff.a armv7s/iPhoneOS.platform/iPhoneOS6.1.sdk/lib/libtiff.a -output /mylibs/libtiff.a -create
 
