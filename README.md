@@ -47,8 +47,8 @@ I had to change lines 72-78 of src/gaiaaux/gg_utf8.c and lines 74-80 of src/gaig
     #include <langinfo.h>
     //#endif
     
-License
--------
+License ( MIT )
+---------------
 
 Copyright (c) 2013 Raymond Aaron Farnham
 
