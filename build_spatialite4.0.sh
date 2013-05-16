@@ -131,9 +131,6 @@ export CXXCPP="${CPP}"
     --host="${arch}-apple-darwin" \
     --disable-shared \
     --enable-static \
-    --disable-freexl \
-    --disable-geos \
-    #--with-unix-stdio-64=no \
     "$@" || exit
 
 make install || exit
