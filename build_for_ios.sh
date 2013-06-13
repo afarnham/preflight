@@ -32,16 +32,17 @@ set -u
 
 
 default_gcc_version=4.2
-default_iphoneos_version=6.1
+default_iphoneos_version=7.0
 default_macos_version=10.8
-default_architecture=armv7
+default_architecture=armv7s
 default_prefix="${HOME}/iOS_lib"
 
-GCC_VERSION="${GCC_VERSION:-$default_gcc_version}"
+#GCC_VERSION="${GCC_VERSION:-$default_gcc_version}"
 export IPHONEOS_DEPLOYMENT_TARGET="${IPHONEOS_DEPLOYMENT_TARGET:-$default_iphoneos_version}"
 export MACOSX_DEPLOYMENT_TARGET="${MACOSX_DEPLOYMENT_TARGET:-$default_macos_version}"
 DEFAULT_ARCHITECTURE="${DEFAULT_ARCHITECTURE:-$default_architecture}"
 DEFAULT_PREFIX="${HOME}/iOS_lib"
+DEFAULT_PLATFORM="iPhoneOS"
 
 echo Default architecture: $DEFAULT_ARCHITECTURE
 
@@ -93,14 +94,19 @@ case $target in
 
     device )
     arch="${DEFAULT_ARCHITECTURE}"
-    platform=iPhoneOS
-    extra_cflags="-m${thumb_opt:-no-thumb} -mthumb-interwork"
+    platform=iphoneos
+    #extra_cflags="-m${thumb_opt:-no-thumb}"
+    extra_cflags="-mthumb"
+    cc="xcrun --sdk ${platform} clang"
+    cxx="xcrun --sdk ${platform} g++"
     ;;
 
     simulator )
     arch=i386
-    platform=iPhoneSimulator
+    platform=iphonesimulator
     extra_cflags="-D__IPHONE_OS_VERSION_MIN_REQUIRED=${IPHONEOS_DEPLOYMENT_TARGET%%.*}0000"
+    cc="/usr/bin/clang"
+    cxx="/usr/bin/g++"
     ;;
 
     * )
@@ -110,20 +116,16 @@ case $target in
 
 esac
 
-
-platform_dir="/Applications/Xcode.app/Contents/Developer/Platforms/${platform}.platform/Developer"
-platform_bin_dir="${platform_dir}/usr/llvm-gcc-${GCC_VERSION}/bin"
-platform_sdk_dir="${platform_dir}/SDKs/${platform}${IPHONEOS_DEPLOYMENT_TARGET}.sdk"
 prefix="${prefix}/${arch}/${platform}.platform/${platform}${IPHONEOS_DEPLOYMENT_TARGET}.sdk"
 
 echo library will be exported to $prefix
 
-export CC="${platform_bin_dir}/llvm-gcc-${GCC_VERSION}"
-export CFLAGS="-arch ${arch} -pipe -Os -gdwarf-2 -isysroot ${platform_sdk_dir} ${extra_cflags}"
-export LDFLAGS="-arch ${arch} -isysroot ${platform_sdk_dir}"
-export CXX="${platform_bin_dir}/llvm-g++-${GCC_VERSION}"
+export CC="${cc}"
+export CFLAGS="-arch ${arch} -pipe -Os -gdwarf-2 ${extra_cflags}"
+export LDFLAGS="-arch ${arch} -isysroot $(xcrun --show-sdk-path --sdk ${platform})"
+export CXX="${cxx}"
 export CXXFLAGS="${CFLAGS}"
-export CPP="${platform_bin_dir}/llvm-cpp-${GCC_VERSION}"
+export CPP="/usr/bin/clang -E"
 export CXXCPP="${CPP}"
 
 
@@ -133,6 +135,9 @@ export CXXCPP="${CPP}"
     --disable-shared \
     --enable-static \
     --with-unix-stdio-64=no \
+    --with-static-proj4=${prefix} \
+    --with-poppler=${prefix} \
+    --with-spatialite=${prefix} \
     "$@" || exit
 
 make install || exit
