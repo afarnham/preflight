@@ -98,15 +98,17 @@ case $target in
     #extra_cflags="-m${thumb_opt:-no-thumb}"
     extra_cflags="-mthumb"
     cc="xcrun --sdk ${platform} clang"
-    cxx="xcrun --sdk ${platform} g++"
+    #cxx="xcrun --sdk ${platform} g++"
+    cxx="xcrun --sdk ${platform} clang"
     ;;
 
     simulator )
     arch=i386
     platform=iphonesimulator
     extra_cflags="-D__IPHONE_OS_VERSION_MIN_REQUIRED=${IPHONEOS_DEPLOYMENT_TARGET%%.*}0000"
-    cc="/usr/bin/clang"
-    cxx="/usr/bin/g++"
+    cc="xcrun --sdk ${platform} clang -mios-simulator-version-min=7.0"
+    cxx="xcrun --sdk ${platform} clang++ -mios-simulator-version-min=7.0"
+    #cxx="/usr/bin/clang++"
     ;;
 
     * )
