@@ -119,21 +119,23 @@ prefix="${prefix}/${arch}/${platform}.platform/${platform}${IPHONEOS_DEPLOYMENT_
 echo library will be exported to $prefix
 
 export CC="${platform_bin_dir}/llvm-gcc-${GCC_VERSION}"
-export CFLAGS="-arch ${arch} -pipe -Os -gdwarf-2 -isysroot ${platform_sdk_dir} ${extra_cflags} -I${prefix}/include"
-export LDFLAGS="-arch ${arch} -isysroot ${platform_sdk_dir} -L${prefix}/lib"
+export CFLAGS="-arch ${arch} -pipe -Os -gdwarf-2 -isysroot ${platform_sdk_dir} ${extra_cflags}"
+export LDFLAGS="-arch ${arch} -isysroot ${platform_sdk_dir}"
 export CXX="${platform_bin_dir}/llvm-g++-${GCC_VERSION}"
 export CXXFLAGS="${CFLAGS}"
 export CPP="${platform_bin_dir}/llvm-cpp-${GCC_VERSION}"
 export CXXCPP="${CPP}"
 
-./configure \
-    --prefix="${prefix}" \
-    --host="${arch}-apple-darwin" \
-    --disable-shared \
-    --enable-static \
-    "$@" || exit
+./bootstrap.sh --with-libraries=thread,signals,filesystem,regex,system,date_time
 
-make install || exit
+git checkout tools/build/v2/user-config.jam
+
+echo "using darwin : iphone \n \
+        : ${CXX} -miphoneos-version-min=5.0 -fvisibility=hidden -fvisibility-inlines-hidden ${CXXFLAGS} -I${INCLUDEDIR} -L${LIBDIR} \n \
+        : <architecture>arm <target-os>iphone \n \
+        ;" >> boost/tools/build/v2/user-config.jam
+
+./bjam -a --build-dir=boost-build --stagedir=boost-stage --prefix=${PREFIX} toolset=darwin architecture=arm target-os=iphone  define=_LITTLE_ENDIAN link=static install
 
 cat >&2 << EOF
 
