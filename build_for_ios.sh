@@ -96,7 +96,7 @@ case $target in
     arch="${DEFAULT_ARCHITECTURE}"
     platform=iphoneos
     #extra_cflags="-m${thumb_opt:-no-thumb}"
-    extra_cflags="-mthumb"
+    extra_cflags="-mthumb -DSQLITE_ENABLE_RTREE=1"
     cc="xcrun --sdk ${platform} clang"
     #cxx="xcrun --sdk ${platform} g++"
     cxx="xcrun --sdk ${platform} clang"
@@ -105,7 +105,8 @@ case $target in
     simulator )
     arch=i386
     platform=iphonesimulator
-    extra_cflags="-D__IPHONE_OS_VERSION_MIN_REQUIRED=${IPHONEOS_DEPLOYMENT_TARGET%%.*}0000"
+    #extra_cflags="-D__IPHONE_OS_VERSION_MIN_REQUIRED=${IPHONEOS_DEPLOYMENT_TARGET%%.*}0000"
+    extra_cflags="-DSQLITE_ENABLE_RTREE=1"
     cc="xcrun --sdk ${platform} clang -mios-simulator-version-min=7.0"
     cxx="xcrun --sdk ${platform} clang++ -mios-simulator-version-min=7.0"
     #cxx="/usr/bin/clang++"
@@ -123,8 +124,9 @@ prefix="${prefix}/${arch}/${platform}.platform/${platform}${IPHONEOS_DEPLOYMENT_
 echo library will be exported to $prefix
 
 export CC="${cc}"
-export CFLAGS="-arch ${arch} -pipe -Os -gdwarf-2 ${extra_cflags}"
-export LDFLAGS="-arch ${arch} -isysroot $(xcrun --show-sdk-path --sdk ${platform})"
+export CFLAGS="-arch ${arch} -pipe -Os -gdwarf-2 ${extra_cflags} -I${prefix}/include"
+#export LDFLAGS="-arch ${arch} -isysroot $(xcrun --show-sdk-path --sdk ${platform}) -L${prefix}/lib"
+export LDFLAGS="-arch ${arch} -L${prefix}/lib"
 export CXX="${cxx}"
 export CXXFLAGS="${CFLAGS}"
 export CPP="/usr/bin/clang -E"
@@ -136,10 +138,11 @@ export CXXCPP="${CPP}"
     --host="${arch}-apple-darwin" \
     --disable-shared \
     --enable-static \
-    --with-unix-stdio-64=no \
-    --with-static-proj4=${prefix} \
-    --with-poppler=${prefix} \
-    --with-spatialite=${prefix} \
+    --enable-geos=no \
+#    --with-unix-stdio-64=no \
+#    --with-static-proj4=${prefix} \
+#    --with-poppler=${prefix} \
+#    --with-spatialite=${prefix} \
     "$@" || exit
 
 make install || exit
