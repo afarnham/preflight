@@ -1,9 +1,16 @@
 #!/usr/bin/python
 
 import os
+import importlib
+import sys
+import subprocess
+import tempfile
+import shutil
+from urlparse import urlparse
 
 IPHONE_PLATFORM = 'iphoneos'
 SIM_PLATFORM = 'iphonesimulator'
+DEFAULT_PREFIX_BASE = '~/iOS_lib'
 
 def min_deployment_version():
     return '7.0'
@@ -66,37 +73,65 @@ def get_prefix(arch, platform):
         'platform' : platform,
         'min_version' : min_deployment_version()
     }
-    return os.path.join(path, '/{arch}/{platform}.platform/{platform}{min_version}.sdk'.format(**path_args))
+    prefix_path = os.path.join(path, '{arch}/{platform}.platform/{platform}{min_version}.sdk'.format(**path_args))
+    return prefix_path
 
 
 def set_env(arch, platform):
-    print '-----------------------'
     CC = get_cc(platform)
-    print 'CC="{0}"'.format(CC)
-    
+    os.environ['CC']=CC
+
     CFLAGS = get_cflags(arch, platform)
-    print 'CFLAGS="{0}"'.format(CFLAGS)
+    os.environ['CFLAGS']=CC
 
     LDFLAGS = get_ldflags(arch, platform)
-    print 'LDFLAGS="{0}"'.format(LDFLAGS)
+    os.environ['LDFLAGS']=CC
 
     CXX = get_cxx(platform)
-    print 'CXX="{0}"'.format(CXX)
+    os.environ['CXX']=CC
 
     CXXFLAGS = get_cxxflags(arch, platform)
-    print 'CXXFLAGS="{0}"'.format(CXXFLAGS)
+    os.environ['CXXFLAGS']=CC
 
     CPP = get_c_preprocessor()
-    print 'CPP="{0}"'.format(CPP)
+    os.environ['CPP']=CC
 
     CXXCPP = get_cxx_preprocessor()
-    print 'CXXCPP='+CXXCPP
+    os.environ['CXXCPP']=CC
 
+def chdir_flightbag(flightplan):
+    path = os.path.join(os.getcwd(), 'Flightbag', flightplan.get_sourcepath())
+    if not os.path.exists(path):
+        os.makedirs(path)
+    os.chdir(path)
+    return path
+
+def cache_path():
+    cache_path = os.path.expanduser("~/Library/Caches/PreFlight")
+    if not os.path.exists(cache_path):
+        os.makedirs(cache_path)
+    return cache_path
 
 def build_lib():
-    for platform in get_platforms():
-        for arch in architectures(platform):
-            set_env(arch, platform)
+    if len(sys.argv) >= 3:
+        command = sys.argv[1]
+        flightplan_name = sys.argv[2]
+        if command == 'build':
+            flightplan_module = importlib.import_module('flightplans.{0}'.format(flightplan_name))
+            orig_path = os.getcwd()
+            flightplan = flightplan_module.FLIGHTPLAN_CLASS()
+            working_dir = chdir_flightbag(flightplan)
+            cache = cache_path()
+            for platform in get_platforms():
+                for arch in architectures(platform):
+                    set_env(arch, platform)
+                    prefix = get_prefix(arch, platform)
+                    if not os.path.exists(prefix):
+                        os.makedirs(prefix)
+                    flightplan.set_build_info(cache, working_dir, arch, platform, get_prefix(arch, platform))
+                    flightplan.build_package()
+            os.chdir(orig_path)
+
 
 if __name__ == '__main__':
     build_lib()
