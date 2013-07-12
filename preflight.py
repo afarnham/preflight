@@ -51,7 +51,11 @@ def get_cflags(arch, platform):
     return cflags
 
 def get_ldflags(arch, platform):
-    flags = "-arch {arch} -isysroot $(xcrun --show-sdk-path --sdk {platform}) -L{prefix}/lib".format(arch=arch, platform=platform, prefix=get_prefix(arch, platform))
+    sysroot = subprocess.check_output(['xcrun', '--show-sdk-path', '--sdk', platform])
+    flags = "-arch {arch} -isysroot {sysroot} -L{prefix}/lib".format(arch=arch,
+                                                                     sysroot=sysroot.strip(),
+                                                                     platform=platform,
+                                                                     prefix=get_prefix(arch, platform))
     return flags
 
 def get_cxxflags(arch, platform):
@@ -82,22 +86,22 @@ def set_env(arch, platform):
     os.environ['CC']=CC
 
     CFLAGS = get_cflags(arch, platform)
-    os.environ['CFLAGS']=CC
+    os.environ['CFLAGS']=CFLAGS
 
     LDFLAGS = get_ldflags(arch, platform)
-    os.environ['LDFLAGS']=CC
+    os.environ['LDFLAGS']=LDFLAGS
 
     CXX = get_cxx(platform)
-    os.environ['CXX']=CC
+    os.environ['CXX']=CXX
 
     CXXFLAGS = get_cxxflags(arch, platform)
-    os.environ['CXXFLAGS']=CC
+    os.environ['CXXFLAGS']=CXXFLAGS
 
     CPP = get_c_preprocessor()
-    os.environ['CPP']=CC
+    os.environ['CPP']=CPP
 
     CXXCPP = get_cxx_preprocessor()
-    os.environ['CXXCPP']=CC
+    os.environ['CXXCPP']=CXXCPP
 
 def chdir_flightbag(flightplan):
     path = os.path.join(os.getcwd(), 'Flightbag', flightplan.get_sourcepath())
@@ -112,28 +116,37 @@ def cache_path():
         os.makedirs(cache_path)
     return cache_path
 
-def build_lib():
+def build_flightplan(flightplan_name):
+    flightplan_module = importlib.import_module('flightplans.{0}'.format(flightplan_name))
+    orig_path = os.getcwd()
+    flightplan = flightplan_module.FLIGHTPLAN_CLASS()
+    working_dir = chdir_flightbag(flightplan)
+    cache = cache_path()
+
+    for dep in flightplan.deps():
+        build_flightplan(dep)
+
+    print "-----------------------------------------"
+    
+    for platform in get_platforms():
+        for arch in architectures(platform):
+            set_env(arch, platform)
+            prefix = get_prefix(arch, platform)
+            if not os.path.exists(prefix):
+                os.makedirs(prefix)
+            flightplan.set_build_info(cache, working_dir, arch, platform, get_prefix(arch, platform))
+            flightplan.build_package()
+    os.chdir(orig_path)
+
+def main():
     if len(sys.argv) >= 3:
         command = sys.argv[1]
         flightplan_name = sys.argv[2]
         if command == 'build':
-            flightplan_module = importlib.import_module('flightplans.{0}'.format(flightplan_name))
-            orig_path = os.getcwd()
-            flightplan = flightplan_module.FLIGHTPLAN_CLASS()
-            working_dir = chdir_flightbag(flightplan)
-            cache = cache_path()
-            for platform in get_platforms():
-                for arch in architectures(platform):
-                    set_env(arch, platform)
-                    prefix = get_prefix(arch, platform)
-                    if not os.path.exists(prefix):
-                        os.makedirs(prefix)
-                    flightplan.set_build_info(cache, working_dir, arch, platform, get_prefix(arch, platform))
-                    flightplan.build_package()
-            os.chdir(orig_path)
+            build_flightplan(flightplan_name)
 
 
 if __name__ == '__main__':
-    build_lib()
+    main()
             
     

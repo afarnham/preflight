@@ -2,6 +2,7 @@ import subprocess
 import os
 import tarfile
 import shutil
+from urlparse import urlparse
 
 class FlightPlan(object):
     def _configure_options(self):
@@ -14,7 +15,9 @@ class FlightPlan(object):
     def _default_options(self):
         default_options = [
             '--prefix={prefix}'.format(prefix=self.prefix),
-            '--host={arch}-apple-darwin'.format(arch=self.arch)
+            '--host={arch}-apple-darwin'.format(arch=self.arch),
+            '--disable-shared',
+            '--enable-static'
         ]
         return default_options
 
@@ -40,15 +43,18 @@ class FlightPlan(object):
     def package_options(self):
         return []
 
+    def clean_package(self):
+        subprocess.call(['make', 'clean'])
+
     def build_package(self):
+        self.clean_package()
         self.get_resources()
         configure_command = ['./configure']
         opts = self._configure_options()
         if len(opts) > 0:
             configure_command.extend(self._configure_options())
         print ' '.join(configure_command)
-        print os.getcwd()
-        subprocess.check_call(configure_command)
+        subprocess.check_output(configure_command, stderr=subprocess.STDOUT)
 
     def download_url(self, url):
         print "Downloading", url
@@ -69,3 +75,16 @@ class FlightPlan(object):
         tf.close()
         shutil.rmtree(output_dir)
         shutil.move(top_level_dir, output_dir)
+
+    def download_and_unarchive(self, urls):
+        os.chdir(self.cache)
+        for url in urls:
+            parsed_url = urlparse(url)
+            filename = os.path.split(parsed_url.path)[1]
+            full_path = os.path.join(self.cache, filename)
+            if not os.path.exists(full_path):
+                self.download_url(url)
+    
+            full_cache_path = os.path.join(self.cache, filename)
+            self.unarchive(full_cache_path, self.working_dir)
+        os.chdir(self.working_dir)
