@@ -1,52 +1,7 @@
 Preflight
 =========
 
-A script for building binaries from UNIX libs for iOS.
 
-Example 
--------
-
-Building libGeoTiff
-
-    ./build_for_ios.sh simulator \
-    --with-libtiff=/Users/aaron/iOS_lib/i386/iPhoneSimulator.platform/iPhoneSimulator6.1.sdk \
-    --with-libz=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator6.1.sdk/ \
-    --with-proj=/Users/aaron/iOS_lib/i386/iPhoneSimulator.platform/iPhoneSimulator6.1.sdk \
-    --with-jpeg=/Users/aaron/iOS_lib/i386/iPhoneSimulator.platform/iPhoneSimulator6.1.sdk \
-    --enable-incode-epsg
-
-Options
--------
-
-Valid targets are "simulator" and "device".
-
-Use the option "-a" to change the target architecture (e.g. '-a i386'). Valid values are i386, armv7, armv7s and anything else Apple supports. 
-
-The --with-libz option in the example above shows how to pull in the libz from iOS instead of compiling your own
-
-You should run this script once for each target and archictecture compbination you need. Most people will want device + armv7, device + armv7s, and simulator + i386 
-
-Once all the libraries for each target have been built, put them into a fat lib using lipo.
-
-    lipo i386/iPhoneSimulator.platform/iPhoneSimulator6.1.sdk/lib/libtiff.a armv7/iPhoneOS.platform/iPhoneOS6.1.sdk/lib/libtiff.a armv7s/iPhoneOS.platform/iPhoneOS6.1.sdk/lib/libtiff.a -output /mylibs/libtiff.a -create
-
-
-Building spatialite 4.0.0
--------------------------
-
-The script omits FreeXL and GEOS. 
-
-I had to change lines 72-78 of src/gaiaaux/gg_utf8.c and lines 74-80 of src/gaiggeo/gg_shape.c to look like this (i.e. ensure localcharset.h is not used)
-
-
-    //#if defined(__APPLE__) || defined(__ANDROID__)
-    //#include <iconv.h>
-    //#include <localcharset.h>
-    //#else /* neither Mac OsX nor Android */
-    #include <iconv.h>
-    #include <langinfo.h>
-    //#endif
-    
 License
 -------
 
