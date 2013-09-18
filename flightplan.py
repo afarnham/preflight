@@ -46,6 +46,9 @@ class FlightPlan(object):
     def clean_package(self):
         subprocess.call(['make', 'clean'])
 
+    def make_package(self):
+        subprocess.call(['make', 'install'])
+
     def build_package(self):
         self.clean_package()
         self.get_resources()
@@ -55,6 +58,7 @@ class FlightPlan(object):
             configure_command.extend(self._configure_options())
         print ' '.join(configure_command)
         subprocess.check_output(configure_command, stderr=subprocess.STDOUT)
+        self.make_package()
 
     def download_url(self, url):
         print "Downloading", url
