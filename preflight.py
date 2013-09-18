@@ -16,7 +16,7 @@ def min_deployment_version():
     return '7.0'
 
 def architectures(platform):
-    return {IPHONE_PLATFORM: ['armv7', 'armv7s'],
+    return {IPHONE_PLATFORM: ['armv7', 'armv7s', 'arm64'],
             SIM_PLATFORM: ['i386']}[platform]
 
 def get_platforms():
