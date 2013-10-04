@@ -15,7 +15,7 @@ Output currently goes to ~/iOS_libs and is not yet configurable. The library doe
 
     lipo -create <path to armv7 lib> <path to armv7s lib> <path to i386 lib> -output myFatBinary.a
 
-Obviously if you build for other architectures than those above, you can add them as well.
+Obviously, if you build for other architectures than those above, you can add them as well.
 
 License
 -------
