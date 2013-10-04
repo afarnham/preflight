@@ -9,7 +9,13 @@ Usage
 Where &lt;flightplan name&gt; is the filename of any python script in the flightplans sub-directory without the '.py' extension.
 For example:
 
-    pyhton preflight.py build libspatialite
+    python preflight.py build libspatialite
+    
+Output currently goes to ~/iOS_libs and is not yet configurable. The library does not create a fat binary for you but it is easy to do:
+
+    lipo -create <path to armv7 lib> <path to armv7s lib> <path to i386 lib> -output myFatBinary.a
+
+Obviously if you build for other architectures than those above, you can add them as well.
 
 License
 -------
