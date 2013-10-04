@@ -1,0 +1,56 @@
+diff -rupN libspatialite-4.1.1-orig/src/gaiaaux/gg_utf8.c libspatialite-4.1.1-mod/src/gaiaaux/gg_utf8.c
+--- libspatialite-4.1.1-orig/src/gaiaaux/gg_utf8.c	2013-06-29 01:53:15.000000000 -0500
++++ libspatialite-4.1.1-mod/src/gaiaaux/gg_utf8.c	2013-10-04 12:03:29.000000000 -0500
+@@ -69,13 +69,13 @@ extern const char *locale_charset (void)
+ #include <localcharset.h>
+ #endif /* end localcharset */
+ #else /* not MINGW32 - WIN32 */
+-#if defined(__APPLE__) || defined(__ANDROID__)
+-#include <iconv.h>
+-#include <localcharset.h>
+-#else /* neither Mac OsX nor Android */
++//#if defined(__APPLE__) || defined(__ANDROID__)
++//#include <iconv.h>
++//#include <localcharset.h>
++//#else /* neither Mac OsX nor Android */
+ #include <iconv.h>
+ #include <langinfo.h>
+-#endif
++//#endif
+ #endif
+ 
+ #include <spatialite/sqlite.h>
+diff -rupN libspatialite-4.1.1-orig/src/gaiageo/gg_shape.c libspatialite-4.1.1-mod/src/gaiageo/gg_shape.c
+--- libspatialite-4.1.1-orig/src/gaiageo/gg_shape.c	2013-06-29 01:53:15.000000000 -0500
++++ libspatialite-4.1.1-mod/src/gaiageo/gg_shape.c	2013-10-04 12:03:48.000000000 -0500
+@@ -71,13 +71,13 @@ extern const char *locale_charset (void)
+ #include <localcharset.h>
+ #endif /* end localcharset */
+ #else /* not MINGW32 */
+-#if defined(__APPLE__) || defined(__ANDROID__)
+-#include <iconv.h>
+-#include <localcharset.h>
+-#else /* neither Mac OsX nor Android */
++//#if defined(__APPLE__) || defined(__ANDROID__)
++//#include <iconv.h>
++//#include <localcharset.h>
++//#else /* neither Mac OsX nor Android */
+ #include <iconv.h>
+ #include <langinfo.h>
+-#endif
++//#endif
+ #endif
+ 
+ #include <spatialite/sqlite.h>
+diff -rupN libspatialite-4.1.1-orig/src/shapefiles/validator.c libspatialite-4.1.1-mod/src/shapefiles/validator.c
+--- libspatialite-4.1.1-orig/src/shapefiles/validator.c	2013-06-29 01:53:15.000000000 -0500
++++ libspatialite-4.1.1-mod/src/shapefiles/validator.c	2013-10-04 12:02:55.000000000 -0500
+@@ -3510,7 +3510,7 @@ check_geometry_column (sqlite3 * sqlite,
+ 
+ /* silencing stupid compiler warnings */
+     if (sqlite == NULL || table == NULL || geom == NULL ||
+-	||report_path == NULL || n_rows == NULL || n_invalids == NULL)
++	report_path == NULL || n_rows == NULL || n_invalids == NULL)
+ 	table = NULL;
+ 
+     if (err_msg == NULL)
