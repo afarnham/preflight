@@ -29,7 +29,7 @@ More flightplans welcome!
 Misc
 ----
 
-The build directory is preflight/Flightbags. This directory is conveniently ignored by .gitignore.
+The build directory is preflight/Flightbag. This directory is conveniently ignored by .gitignore.
 
 TODO
 ----
