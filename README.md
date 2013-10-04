@@ -6,7 +6,7 @@ Usage
 
     python preflight.py build <flightplan name>
     
-Where <flightplan name> is the filename of any python script in the flightplans sub-directory without the '.py' extension.
+Where &lt;flightplan name&gt; is the filename of any python script in the flightplans sub-directory without the '.py' extension.
 For example:
 
     pyhton preflight.py build libspatialite
