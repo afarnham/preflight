@@ -22,7 +22,7 @@ Obviously, if you build for other architectures than those above, you can add th
 Creating a Flightplan
 ---------------------
 
-Copy one of the existing ones and use it as a template. The flightplan.py script should also be used as reference since it contains the super class for all flightplans. Each flightplan is just a python script so it should be pretty configurable.
+Copy one of the existing ones and use it as a template. The flightplan.py script should also be used as reference since it contains the super class for all flightplans. Each flightplan is just a python script so it should be easily configurable.
 
 More flightplans welcome!
 
