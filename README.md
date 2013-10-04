@@ -26,6 +26,11 @@ Copy one of the existing ones and use it as a template. The flightplan.py script
 
 More flightplans welcome!
 
+Misc
+----
+
+The build directory is preflight/Flightbags. This directory is conveniently ignored by .gitignore.
+
 TODO
 ----
 
