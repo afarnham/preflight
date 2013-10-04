@@ -1,6 +1,8 @@
 Preflight
 =========
 
+A simple set of Python scripts to automate building static libraries for iOS. This script uses 'flightplans' as configuration items for building a library. 
+
 Usage
 -----
 
@@ -16,6 +18,13 @@ Output currently goes to ~/iOS_libs and is not yet configurable. The library doe
     lipo -create <path to armv7 lib> <path to armv7s lib> <path to i386 lib> -output myFatBinary.a
 
 Obviously, if you build for other architectures than those above, you can add them as well.
+
+Creating a Flightplan
+---------------------
+
+Copy one of the existing ones and use it as a template. The flightplan.py script should also be used as reference since it contains the super class for all flightplans. Each flightplan is just a python script so it should be pretty configurable.
+
+More flightplans welcome!
 
 TODO
 ----
