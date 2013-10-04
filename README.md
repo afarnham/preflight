@@ -37,7 +37,7 @@ TODO
 * The flightplans are currently configured for what I need at my place of work (ForeFlight). Work needs to be done to allow custom configurations with ease.
 * Create fat binaries automatically
 * Configurable output location
-* Package lib + necessary header files into a simple unit
+* Package lib + necessary header files
 * arm64 support
 
 License
