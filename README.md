@@ -17,6 +17,15 @@ Output currently goes to ~/iOS_libs and is not yet configurable. The library doe
 
 Obviously, if you build for other architectures than those above, you can add them as well.
 
+TODO
+----
+
+* The flightplans are currently configured for what I need at my place of work (ForeFlight). Work needs to be done to allow custom configurations with ease.
+* Create fat binaries automatically
+* Configurable output location
+* Package lib + necessary header files into a simple unit
+* arm64 support
+
 License
 -------
 
