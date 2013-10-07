@@ -12,8 +12,14 @@ IPHONE_PLATFORM = 'iphoneos'
 SIM_PLATFORM = 'iphonesimulator'
 DEFAULT_PREFIX_BASE = '~/iOS_lib'
 
+XCODE_4_6_DEFAULTS = {'xcode_version': 4.6,
+                      'min_deployment_version': '6.1'}
+XCODE_5_0_DEFAULTS = {'xcode_version': 5.0,
+                      'min_deployment_version': '7.0'}
+DEFAULT_XCODE = XCODE_4_6_DEFAULTS
+
 def min_deployment_version():
-    return '7.0'
+    return DEFAULT_XCODE['min_deployment_version']
 
 def architectures(platform):
     return {IPHONE_PLATFORM: ['armv7', 'armv7s'],
@@ -51,7 +57,13 @@ def get_cflags(arch, platform):
     return cflags
 
 def get_ldflags(arch, platform):
-    sysroot = subprocess.check_output(['xcrun', '--show-sdk-path', '--sdk', platform])
+    #Example sysroot directory: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk
+    sysroot = ""
+    if DEFAULT_XCODE['xcode_version'] == 4.6:
+        xcode_path = subprocess.check_output(['xcode-select', '--print-path']).strip()
+        sysroot = os.path.join(xcode_path, 'Platforms', platform + '.platform', 'Developer', 'SDKs', '{platform}{version}.sdk'.format(platform=platform, version=min_deployment_version()))
+    else:
+        sysroot = subprocess.check_output(['xcrun', '--show-sdk-path', '--sdk', platform])
     flags = "-arch {arch} -isysroot {sysroot} -L{prefix}/lib".format(arch=arch,
                                                                      sysroot=sysroot.strip(),
                                                                      platform=platform,
