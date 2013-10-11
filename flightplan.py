@@ -13,9 +13,12 @@ class FlightPlan(object):
         return options
 
     def _default_options(self):
+        arch = self.arch
+        if arch == 'arm64':
+            arch = 'aarch64'
         default_options = [
             '--prefix={prefix}'.format(prefix=self.prefix),
-            '--host={arch}-apple-darwin'.format(arch=self.arch),
+            '--host={arch}-apple-darwin'.format(arch=arch),
             '--disable-shared',
             '--enable-static'
         ]
@@ -92,3 +95,12 @@ class FlightPlan(object):
             full_cache_path = os.path.join(self.cache, filename)
             self.unarchive(full_cache_path, self.working_dir)
         os.chdir(self.working_dir)
+
+    def cflags(self):
+        return ''
+    
+    def cxxflags(self):
+        return ''
+    
+    def ldflags(self):
+        return ''
