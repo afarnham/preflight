@@ -13,8 +13,12 @@ SIM_PLATFORM = 'iphonesimulator'
 DEFAULT_PREFIX_BASE = '~/iOS_lib'
 
 XCODE_4_6_DEFAULTS = {'xcode_version': 4.6,
+					  'iphone_archs': ['armv7', 'armv7s'],
+					  'sim_archs':['i386'],
                       'min_deployment_version': '6.1'}
 XCODE_5_0_DEFAULTS = {'xcode_version': 5.0,
+					  'iphone_archs': ['armv7', 'armv7s', 'arm64'],
+					  'sim_archs':['i386', 'x86_64'],
                       'min_deployment_version': '7.0'}
 DEFAULT_XCODE = XCODE_4_6_DEFAULTS
 
@@ -22,32 +26,34 @@ def min_deployment_version():
     return DEFAULT_XCODE['min_deployment_version']
 
 def architectures(platform):
-    return {IPHONE_PLATFORM: ['armv7', 'armv7s'],
-            SIM_PLATFORM: ['i386']}[platform]
+    return {IPHONE_PLATFORM: DEFAULT_XCODE['iphone_archs'],
+            SIM_PLATFORM: DEFAULT_XCODE['sim_archs']}[platform]
 
 def get_platforms():
     return [IPHONE_PLATFORM, SIM_PLATFORM]
 
-def append_options(compiler, platform):
+def append_options(compiler, arch, platform):
     output = compiler
     if platform == SIM_PLATFORM:
         output += ' -mios-simulator-version-min={min_version}'.format(min_version=min_deployment_version())
+    elif platform == IPHONE_PLATFORM and arch == 'arm64':
+        output += ' -mios-version-min={version}'.format(version=min_deployment_version())
     return output
 
-def get_cc(platform):
+def get_cc(arch, platform):
     cc = 'xcrun --sdk {platform} clang'.format(platform=platform)
-    cc = append_options(cc, platform)
+    cc = append_options(cc, arch, platform)
     return cc
 
-def get_cxx(platform):
+def get_cxx(arch, platform):
     cxx = 'xcrun --sdk {platform} clang++'.format(platform=platform)
-    cxx = append_options(cxx, platform)
+    cxx = append_options(cxx, arch, platform)
     return cxx
 
 def get_cflags(arch, platform):
     common_flags = '-arch {arch} -pipe -Os -gdwarf-2 -I{prefix}/include'.format(arch=arch, prefix=get_prefix(arch, platform))
     platform_flags = {
-        IPHONE_PLATFORM : '-mthumb',
+        IPHONE_PLATFORM : None, #'-mthumb',
         SIM_PLATFORM : None
     }
 
@@ -93,20 +99,23 @@ def get_prefix(arch, platform):
     return prefix_path
 
 
-def set_env(arch, platform):
-    CC = get_cc(platform)
+def set_env(arch, platform, flightplan):
+    CC = get_cc(arch, platform)
     os.environ['CC']=CC
 
     CFLAGS = get_cflags(arch, platform)
+    CFLAGS = ' '.join([CFLAGS, flightplan.cflags()])
     os.environ['CFLAGS']=CFLAGS
-
+    
     LDFLAGS = get_ldflags(arch, platform)
+    LDFLAGS = ' '.join([LDFLAGS, flightplan.ldflags()])
     os.environ['LDFLAGS']=LDFLAGS
 
-    CXX = get_cxx(platform)
+    CXX = get_cxx(arch, platform)
     os.environ['CXX']=CXX
 
     CXXFLAGS = get_cxxflags(arch, platform)
+    CXXFLAGS = ' '.join([CXXFLAGS, flightplan.cxxflags()])
     os.environ['CXXFLAGS']=CXXFLAGS
 
     CPP = get_c_preprocessor()
@@ -142,7 +151,7 @@ def build_flightplan(flightplan_name):
     
     for platform in get_platforms():
         for arch in architectures(platform):
-            set_env(arch, platform)
+            set_env(arch, platform, flightplan)
             prefix = get_prefix(arch, platform)
             if not os.path.exists(prefix):
                 os.makedirs(prefix)
