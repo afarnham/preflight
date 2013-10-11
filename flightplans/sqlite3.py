@@ -22,6 +22,10 @@ class SQLite3FlightPlan(FlightPlan):
             'http://www.sqlite.org/2013/sqlite-autoconf-3080002.tar.gz'
         ]
         self.download_and_unarchive(urls)
+        
+    def cflags(self):
+    	flags = ['-DSQLITE_SOUNDEX']
+    	return ' '.join(flags)
     
 FLIGHTPLAN_CLASS = SQLite3FlightPlan
 
