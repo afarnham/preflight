@@ -7,7 +7,7 @@ from flightplan import FlightPlan
 
 class Proj4FlightPlan(FlightPlan):
     def get_version(self):
-        return '4.8.0'
+        return '4.9.0b2'
 
     def get_name(self):
         return 'proj4'
@@ -20,7 +20,7 @@ class Proj4FlightPlan(FlightPlan):
 
     def get_resources(self):
         urls = [
-            'http://download.osgeo.org/proj/proj-4.8.0.tar.gz'
+            'http://download.osgeo.org/proj/proj-4.9.0b2.tar.gz'
         ]
         self.download_and_unarchive(urls)
 
