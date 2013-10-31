@@ -20,7 +20,7 @@ XCODE_5_0_DEFAULTS = {'xcode_version': 5.0,
 					  'iphone_archs': ['armv7', 'armv7s', 'arm64'],
 					  'sim_archs':['i386', 'x86_64'],
                       'min_deployment_version': '7.0'}
-DEFAULT_XCODE = XCODE_4_6_DEFAULTS
+DEFAULT_XCODE = XCODE_5_0_DEFAULTS
 
 def min_deployment_version():
     return DEFAULT_XCODE['min_deployment_version']
