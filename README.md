@@ -38,7 +38,6 @@ TODO
 * Create fat binaries automatically
 * Configurable output location
 * Package lib + necessary header files
-* arm64 support
 
 License
 -------
