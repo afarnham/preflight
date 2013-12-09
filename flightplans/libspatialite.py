@@ -30,11 +30,25 @@ class SpatialiteFlightPlan(FlightPlan):
         self.patch()
 
     def patch(self):
+        src_dir = os.path.dirname(os.path.abspath(__file__))
         patch_file = 'libspatialite_' + self.get_version() + '.patch'
-        patch_path = os.path.dirname(os.path.abspath(__file__))
-        patch_path = os.path.join(patch_path, patch_file)
+        patch_path = os.path.join(src_dir, patch_file)
         with open(patch_path) as f:
             subprocess.call(['patch', '-p1'], stdin=f)
+
+        #subprocess.call(['autoreconf'])
+    
+        dst_dir = self.working_dir
+        srcfile = os.path.join(src_dir, 'libspatialite_updated_files', 'config.guess')
+        dstfile = os.path.join(dst_dir, 'config.guess')
+        shutil.copyfile(srcfile, dstfile)
+
+        srcfile = os.path.join(src_dir, 'libspatialite_updated_files', 'config.sub')
+        dstfile = os.path.join(dst_dir, 'config.sub')
+        shutil.copyfile(srcfile, dstfile)
+
+    def cflags(self):
+        return '-Wno-error=implicit-function-declaration' #fixes builds for 64-bit devices w/ clang
 
 
 FLIGHTPLAN_CLASS = SpatialiteFlightPlan
