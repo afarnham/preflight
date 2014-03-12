@@ -113,27 +113,35 @@ def get_prefix(arch, platform):
 def set_env(arch, platform, flightplan):
     CC = get_cc(arch, platform)
     os.environ['CC']=CC
+    print os.environ['CC']
+
 
     CFLAGS = get_cflags(arch, platform)
     CFLAGS = ' '.join([CFLAGS, flightplan.cflags()])
     os.environ['CFLAGS']=CFLAGS
+    print os.environ['CFLAGS']
     
     LDFLAGS = get_ldflags(arch, platform)
     LDFLAGS = ' '.join([LDFLAGS, flightplan.ldflags()])
     os.environ['LDFLAGS']=LDFLAGS
+    print os.environ['LDFLAGS']
 
     CXX = get_cxx(arch, platform)
     os.environ['CXX']=CXX
+    print os.environ['CXX']
 
     CXXFLAGS = get_cxxflags(arch, platform)
     CXXFLAGS = ' '.join([CXXFLAGS, flightplan.cxxflags()])
     os.environ['CXXFLAGS']=CXXFLAGS
+    print os.environ['CXXFLAGS']
 
-    CPP = get_c_preprocessor()
+    CPP = get_c_preprocessor(platform)
     os.environ['CPP']=CPP
+    print os.environ['CPP']
 
-    CXXCPP = get_cxx_preprocessor()
+    CXXCPP = get_cxx_preprocessor(platform)
     os.environ['CXXCPP']=CXXCPP
+    print os.environ['CXXCPP']
 
 def chdir_flightbag(flightplan):
     path = os.path.join(os.getcwd(), 'Flightbag', flightplan.get_sourcepath())
