@@ -16,10 +16,10 @@ XCODE_4_6_DEFAULTS = {'xcode_version': 4.6,
 					  'iphone_archs': ['armv7', 'armv7s'],
 					  'sim_archs':['i386'],
                       'min_deployment_version': '6.1'}
-XCODE_5_0_DEFAULTS = {'xcode_version': 5.0,
-					  'iphone_archs': ['armv7', 'armv7s', 'arm64'],
-					  'sim_archs':['i386', 'x86_64'],
-                      'min_deployment_version': '7.0'}
+XCODE_5_0_DEFAULTS = {'xcode_version': 5.1,
+					  'iphone_archs': ['armv7'], #, 'armv7s'], #, 'arm64'],
+					  'sim_archs':[], #['i386'], #, 'x86_64'],
+                      'min_deployment_version': '7.1'}
 DEFAULT_XCODE = XCODE_5_0_DEFAULTS
 
 def min_deployment_version():
@@ -40,6 +40,15 @@ def append_options(compiler, arch, platform):
         output += ' -mios-version-min={version}'.format(version=min_deployment_version())
     return output
 
+
+def get_sysroot(platform):
+    sysroot = subprocess.check_output(['xcrun', '--show-sdk-path', '--sdk', platform])
+    return sysroot.strip()
+
+def get_system(platform):
+    system = get_sysroot(platform) + '/usr/include'
+    return system
+
 def get_cc(arch, platform):
     cc = 'xcrun --sdk {platform} clang'.format(platform=platform)
     cc = append_options(cc, arch, platform)
@@ -51,7 +60,9 @@ def get_cxx(arch, platform):
     return cxx
 
 def get_cflags(arch, platform):
-    common_flags = '-arch {arch} -pipe -Os -gdwarf-2 -I{prefix}/include'.format(arch=arch, prefix=get_prefix(arch, platform))
+    common_flags = '-arch {arch} -pipe -Os -gdwarf-2 -isysroot {sysroot} -I{prefix}/include'.format(arch=arch,
+                                                                                                    prefix=get_prefix(arch, platform),
+                                                                                                    sysroot=get_sysroot(platform))
     platform_flags = {
         IPHONE_PLATFORM : None, #'-mthumb',
         SIM_PLATFORM : None
@@ -71,7 +82,7 @@ def get_ldflags(arch, platform):
     else:
         sysroot = subprocess.check_output(['xcrun', '--show-sdk-path', '--sdk', platform])
     flags = "-arch {arch} -isysroot {sysroot} -L{prefix}/lib".format(arch=arch,
-                                                                     sysroot=sysroot.strip(),
+                                                                     sysroot=get_sysroot(platform),
                                                                      platform=platform,
                                                                      prefix=get_prefix(arch, platform))
     return flags
@@ -79,11 +90,11 @@ def get_ldflags(arch, platform):
 def get_cxxflags(arch, platform):
     return get_cflags(arch, platform)
 
-def get_c_preprocessor():
-    return '/usr/bin/clang -E'
+def get_c_preprocessor(platform):
+    return subprocess.check_output(['xcrun', '-f', 'clang', '--sdk', platform]).strip() + ' -E' #'/usr/bin/clang -E'
 
-def get_cxx_preprocessor():
-    return get_c_preprocessor()
+def get_cxx_preprocessor(platform):
+    return get_c_preprocessor(platform)
 
 def get_user_default_prefix():
     return os.path.expanduser('~/iOS_libs')
