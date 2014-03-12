@@ -6,23 +6,24 @@ from flightplan import FlightPlan
 
 class GDALFlightPlan(FlightPlan):
     def get_version(self):
-        return '1.10.0'
+        return '1.10.1'
 
     def get_name(self):
         return 'gdal'
    
     def deps(self):
-        return ['proj4']
+        return ['proj4', 'sqlite3']
 
     def package_options(self):
         return [
             '--with-static-proj4={prefix}'.format(prefix=self.prefix),
-            '--with-unix-stdio-64=no'
+            '--with-unix-stdio-64=no',
+            '--with-sqlite3={prefix}'.format(prefix=self.prefix)
         ]
 
     def get_resources(self):
         urls = [
-            'http://download.osgeo.org/gdal/1.10.0/gdal-1.10.0.tar.gz'
+            'http://download.osgeo.org/gdal/1.10.1/gdal-1.10.1.tar.gz'
         ]
         self.download_and_unarchive(urls)
     
