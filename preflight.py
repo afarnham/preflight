@@ -12,13 +12,9 @@ IPHONE_PLATFORM = 'iphoneos'
 SIM_PLATFORM = 'iphonesimulator'
 DEFAULT_PREFIX_BASE = '~/iOS_lib'
 
-XCODE_4_6_DEFAULTS = {'xcode_version': 4.6,
-					  'iphone_archs': ['armv7', 'armv7s'],
-					  'sim_archs':['i386'],
-                      'min_deployment_version': '6.1'}
 XCODE_5_0_DEFAULTS = {'xcode_version': 5.1,
-					  'iphone_archs': ['armv7'], #, 'armv7s'], #, 'arm64'],
-					  'sim_archs':[], #['i386'], #, 'x86_64'],
+					  'iphone_archs': ['armv7', 'armv7s', 'arm64'],
+					  'sim_archs': ['i386', 'x86_64'],
                       'min_deployment_version': '7.1'}
 DEFAULT_XCODE = XCODE_5_0_DEFAULTS
 
@@ -113,35 +109,27 @@ def get_prefix(arch, platform):
 def set_env(arch, platform, flightplan):
     CC = get_cc(arch, platform)
     os.environ['CC']=CC
-    print os.environ['CC']
-
 
     CFLAGS = get_cflags(arch, platform)
     CFLAGS = ' '.join([CFLAGS, flightplan.cflags()])
     os.environ['CFLAGS']=CFLAGS
-    print os.environ['CFLAGS']
     
     LDFLAGS = get_ldflags(arch, platform)
     LDFLAGS = ' '.join([LDFLAGS, flightplan.ldflags()])
     os.environ['LDFLAGS']=LDFLAGS
-    print os.environ['LDFLAGS']
 
     CXX = get_cxx(arch, platform)
     os.environ['CXX']=CXX
-    print os.environ['CXX']
 
     CXXFLAGS = get_cxxflags(arch, platform)
     CXXFLAGS = ' '.join([CXXFLAGS, flightplan.cxxflags()])
     os.environ['CXXFLAGS']=CXXFLAGS
-    print os.environ['CXXFLAGS']
 
     CPP = get_c_preprocessor(platform)
     os.environ['CPP']=CPP
-    print os.environ['CPP']
 
     CXXCPP = get_cxx_preprocessor(platform)
     os.environ['CXXCPP']=CXXCPP
-    print os.environ['CXXCPP']
 
 def chdir_flightbag(flightplan):
     path = os.path.join(os.getcwd(), 'Flightbag', flightplan.get_sourcepath())
@@ -155,6 +143,28 @@ def cache_path():
     if not os.path.exists(cache_path):
         os.makedirs(cache_path)
     return cache_path
+
+
+def print_env_var(varname, value):
+    print varname + '=' + "'" + value + "'"
+
+def print_env(arch, platform):
+
+    CC = get_cc(arch, platform)
+    CFLAGS = get_cflags(arch, platform)
+    LDFLAGS = get_ldflags(arch, platform)
+    CXX = get_cxx(arch, platform)
+    CXXFLAGS = get_cxxflags(arch, platform)
+    CPP = get_c_preprocessor(platform)
+    CXXCPP = get_cxx_preprocessor(platform)
+    print_env_var('CC', "$(" + CC + ")")
+    print_env_var('CFLAGS', CFLAGS)
+    print_env_var('LDFLAGS', LDFLAGS)
+    print_env_var('CXX', "$(" + CXX + ")")
+    print_env_var('CXXFLAGS', CXXFLAGS)
+    print_env_var('CPP', CPP)
+    print_env_var('CXXCPP', CXXCPP)
+    
 
 def build_flightplan(flightplan_name):
     flightplan_module = importlib.import_module('flightplans.{0}'.format(flightplan_name))
@@ -184,6 +194,10 @@ def main():
         flightplan_name = sys.argv[2]
         if command == 'build':
             build_flightplan(flightplan_name)
+        elif command == 'env':
+            arch = sys.argv[2]
+            platform = sys.argv[3]
+            print_env(arch, platform)
 
 
 if __name__ == '__main__':

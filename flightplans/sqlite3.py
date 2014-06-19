@@ -24,7 +24,15 @@ class SQLite3FlightPlan(FlightPlan):
         self.download_and_unarchive(urls)
         
     def cflags(self):
-    	flags = ['-DSQLITE_SOUNDEX']
+    	flags = ['-DSQLITE_SOUNDEX', 
+                 '-DSQLITE_ENABLE_FTS4_UNICODE61',
+                 '-DSQLITE_ENABLE_FTS3_PARENTHESIS',
+                 '-DSQLITE_ENABLE_LOCKING_STYLE=1',
+                 '-DSQLITE_OMIT_AUTORESET',
+                 '-DSQLITE_OMIT_BUILTIN_TEST',
+                 '-DSQLITE_TEMP_STORE=1',
+                 '-DSQLITE_THREADSAFE=2',
+                 ]
     	return ' '.join(flags)
     
 FLIGHTPLAN_CLASS = SQLite3FlightPlan
