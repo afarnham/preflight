@@ -13,18 +13,18 @@ class SpatialiteFlightPlan(FlightPlan):
         return 'libspatialite'
    
     def deps(self):
-        return ['sqlite3', 'proj4']
+        return [] #['sqlite3', 'proj4', 'geos']
 
     def package_options(self):
         return [
             '--disable-freexl',
-            '--disable-geos',
-            '--disable-examples', # needed if --disable-geos is used
+            '--with-geosconfig={prefix}/bin/geos-config'.format(prefix=self.prefix),
+            '--disable-examples' # needed if --disable-geos is used
         ]
 
     def get_resources(self):
         urls = [
-            'http://www.gaia-gis.it/gaia-sins/libspatialite-4.1.1.tar.gz'
+            'http://www.gaia-gis.it/gaia-sins/libspatialite-sources/libspatialite-4.1.1.tar.gz'
         ]
         self.download_and_unarchive(urls)
         self.patch()
@@ -50,6 +50,8 @@ class SpatialiteFlightPlan(FlightPlan):
     def cflags(self):
         return '-Wno-error=implicit-function-declaration' #fixes builds for 64-bit devices w/ clang
 
+    def ldflags(self):
+        return "-liconv -lgeos -lgeos_c -lc++"
 
 FLIGHTPLAN_CLASS = SpatialiteFlightPlan
 

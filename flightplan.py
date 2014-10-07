@@ -3,6 +3,7 @@ import os
 import tarfile
 import shutil
 from urlparse import urlparse
+import sys
 
 class FlightPlan(object):
     def _configure_options(self):
@@ -50,6 +51,10 @@ class FlightPlan(object):
         subprocess.call(['make', 'clean'])
 
     def make_package(self):
+        #subprocess.call(['make', 'install'])
+        subprocess.call(['make'])
+
+    def install_package(self):
         subprocess.call(['make', 'install'])
 
     def build_package(self):
@@ -60,8 +65,9 @@ class FlightPlan(object):
         if len(opts) > 0:
             configure_command.extend(self._configure_options())
         print ' '.join(configure_command)
-        subprocess.check_output(configure_command, stderr=subprocess.STDOUT)
+        out = subprocess.check_output(configure_command)
         self.make_package()
+        self.install_package()
 
     def download_url(self, url):
         print "Downloading", url
@@ -74,16 +80,18 @@ class FlightPlan(object):
         '''
         raise NotImplementedError     
 
-    def unarchive(self, input_archive, output_dir):
+    def unarchive(self, input_archive, output_dir, split_top_level_path):
         tf = tarfile.open(input_archive)
         top_level_dir = tf.firstmember.name
+        if split_top_level_path:
+            top_level_dir = top_level_dir.split('/')[0]
         print "Extracting", top_level_dir
         tf.extractall()
         tf.close()
         shutil.rmtree(output_dir)
         shutil.move(top_level_dir, output_dir)
 
-    def download_and_unarchive(self, urls):
+    def download_and_unarchive(self, urls, split_top_level_path=False):
         os.chdir(self.cache)
         for url in urls:
             parsed_url = urlparse(url)
@@ -93,7 +101,7 @@ class FlightPlan(object):
                 self.download_url(url)
     
             full_cache_path = os.path.join(self.cache, filename)
-            self.unarchive(full_cache_path, self.working_dir)
+            self.unarchive(full_cache_path, self.working_dir, split_top_level_path)
         os.chdir(self.working_dir)
 
     def cflags(self):
