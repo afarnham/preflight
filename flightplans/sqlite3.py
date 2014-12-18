@@ -25,13 +25,15 @@ class SQLite3FlightPlan(FlightPlan):
         
     def cflags(self):
     	flags = ['-DSQLITE_SOUNDEX', 
+                 '-DSQLITE_ENABLE_RTREE',
+                 '-DSQLITE_DEFAULT_MMAP_SIZE=0',
                  '-DSQLITE_ENABLE_FTS4_UNICODE61',
                  '-DSQLITE_ENABLE_FTS3_PARENTHESIS',
                  '-DSQLITE_ENABLE_LOCKING_STYLE=1',
                  '-DSQLITE_OMIT_AUTORESET',
                  '-DSQLITE_OMIT_BUILTIN_TEST',
                  '-DSQLITE_TEMP_STORE=1',
-                 '-DSQLITE_THREADSAFE=2',
+                 '-DSQLITE_THREADSAFE=1',
                  ]
     	return ' '.join(flags)
     

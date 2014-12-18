@@ -13,12 +13,13 @@ class SpatialiteFlightPlan(FlightPlan):
         return 'libspatialite'
    
     def deps(self):
-        return [] #['sqlite3', 'proj4', 'geos']
+        return ['sqlite3', 'proj4'] #, 'geos']
 
     def package_options(self):
         return [
             '--disable-freexl',
-            '--with-geosconfig={prefix}/bin/geos-config'.format(prefix=self.prefix),
+            #'--with-geosconfig={prefix}/bin/geos-config'.format(prefix=self.prefix),
+            '--disable-geos',
             '--disable-examples' # needed if --disable-geos is used
         ]
 
@@ -51,7 +52,7 @@ class SpatialiteFlightPlan(FlightPlan):
         return '-Wno-error=implicit-function-declaration' #fixes builds for 64-bit devices w/ clang
 
     def ldflags(self):
-        return "-liconv -lgeos -lgeos_c -lc++"
+        return "-liconv" #-lgeos -lgeos_c -lc++"
 
 FLIGHTPLAN_CLASS = SpatialiteFlightPlan
 
