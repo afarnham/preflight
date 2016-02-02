@@ -12,11 +12,11 @@ IPHONE_PLATFORM = 'iphoneos'
 SIM_PLATFORM = 'iphonesimulator'
 DEFAULT_PREFIX_BASE = '~/iOS_lib'
 
-XCODE_6_DEFAULTS = {'xcode_version': 6.1,
+XCODE_7_DEFAULTS = {'xcode_version': 7.2,
 					'iphone_archs': ['armv7', 'arm64'],
 					'sim_archs': ['i386', 'x86_64'],
                     'min_deployment_version': '8.1'}
-DEFAULT_XCODE = XCODE_6_DEFAULTS
+DEFAULT_XCODE = XCODE_7_DEFAULTS
 
 def min_deployment_version():
     return DEFAULT_XCODE['min_deployment_version']
@@ -56,7 +56,7 @@ def get_cxx(arch, platform):
     return cxx
 
 def get_cflags(arch, platform):
-    common_flags = '-arch {arch} -pipe -Os -gdwarf-2 -isysroot {sysroot} -I{prefix}/include'.format(arch=arch,
+    common_flags = '-arch {arch} -pipe -Os -gdwarf-2 -isysroot {sysroot} -I{prefix}/include -fembed-bitcode'.format(arch=arch,
                                                                                                     prefix=get_prefix(arch, platform),
                                                                                                     sysroot=get_sysroot(platform))
     platform_flags = {
