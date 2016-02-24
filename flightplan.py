@@ -31,7 +31,7 @@ class FlightPlan(object):
         self.arch = arch
         self.platform = platform
         self.prefix = prefix
-        
+
     def get_version(self):
         raise NotImplementedError
 
@@ -78,7 +78,7 @@ class FlightPlan(object):
         '''
         Utility for unzipping a given file. Not yet implemented.
         '''
-        raise NotImplementedError     
+        raise NotImplementedError
 
     def unarchive(self, input_archive, output_dir, split_top_level_path):
         tf = tarfile.open(input_archive)
@@ -99,16 +99,16 @@ class FlightPlan(object):
             full_path = os.path.join(self.cache, filename)
             if not os.path.exists(full_path):
                 self.download_url(url)
-    
+
             full_cache_path = os.path.join(self.cache, filename)
             self.unarchive(full_cache_path, self.working_dir, split_top_level_path)
         os.chdir(self.working_dir)
 
     def cflags(self):
         return ''
-    
+
     def cxxflags(self):
         return ''
-    
+
     def ldflags(self):
         return ''
