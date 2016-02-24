@@ -11,7 +11,7 @@ class Proj4FlightPlan(FlightPlan):
 
     def get_name(self):
         return 'proj4'
-   
+
     def deps(self):
         return []
 
@@ -20,9 +20,8 @@ class Proj4FlightPlan(FlightPlan):
 
     def get_resources(self):
         urls = [
-            'http://download.osgeo.org/proj/proj-4.9.0RC2.tar.gz'
+            'http://download.osgeo.org/proj/proj-4.9.1.tar.gz'
         ]
         self.download_and_unarchive(urls)
 
 FLIGHTPLAN_CLASS = Proj4FlightPlan
-
