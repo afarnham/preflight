@@ -6,7 +6,7 @@ from flightplan import FlightPlan
 
 class SQLite3FlightPlan(FlightPlan):
     def get_version(self):
-        return '3.8.0.2'
+        return '3.11.0'
 
     def get_name(self):
         return 'sqlite3'
@@ -15,11 +15,13 @@ class SQLite3FlightPlan(FlightPlan):
         return []
 
     def package_options(self):
-        return []
+        return [
+            '--disable-editline'
+        ]
 
     def get_resources(self):
         urls = [
-            'http://www.sqlite.org/2013/sqlite-autoconf-3080002.tar.gz'
+            'https://www.sqlite.org/2016/sqlite-autoconf-3110000.tar.gz'
         ]
         self.download_and_unarchive(urls)
         

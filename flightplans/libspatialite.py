@@ -7,7 +7,7 @@ from flightplan import FlightPlan
 
 class SpatialiteFlightPlan(FlightPlan):
     def get_version(self):
-        return '4.1.1'
+        return '4.4.0-RC0'
 
     def get_name(self):
         return 'libspatialite'
@@ -18,6 +18,7 @@ class SpatialiteFlightPlan(FlightPlan):
     def package_options(self):
         return [
             '--disable-freexl',
+            '--disable-libxml2',
             #'--with-geosconfig={prefix}/bin/geos-config'.format(prefix=self.prefix),
             '--disable-geos',
             '--disable-examples' # needed if --disable-geos is used
@@ -25,7 +26,7 @@ class SpatialiteFlightPlan(FlightPlan):
 
     def get_resources(self):
         urls = [
-            'http://www.gaia-gis.it/gaia-sins/libspatialite-sources/libspatialite-4.1.1.tar.gz'
+            'http://www.gaia-gis.it/gaia-sins/libspatialite-sources/libspatialite-4.4.0-RC0.tar.gz'
         ]
         self.download_and_unarchive(urls)
         self.patch()
