@@ -12,7 +12,7 @@ class GDALFlightPlan(FlightPlan):
         return 'gdal'
 
     def deps(self):
-        return [] # ['proj4', 'sqlite3']
+        return ['png', 'jpeg', 'proj4', 'sqlite3']
 
     def package_options(self):
         return [
@@ -21,7 +21,6 @@ class GDALFlightPlan(FlightPlan):
             '--with-sqlite3={prefix}'.format(prefix=self.prefix),
             #'--without-gif', #unable to build on x86_64
             '--with-threads',
-            '--with-ogr',
             #'--with-geos',
             '--without-libtool',
             '--with-libz=internal',
@@ -34,8 +33,6 @@ class GDALFlightPlan(FlightPlan):
             '--without-cfitsio',
             '--without-pcraster',
             '--without-netcdf',
-            '--without-png',
-            '--without-jpeg',
             '--without-gif',
             '--without-ogdi',
             '--without-fme',
@@ -54,16 +51,12 @@ class GDALFlightPlan(FlightPlan):
             '--without-expat',
             '--without-odbc',
             '--without-curl',
-            '--without-sqlite3',
             '--without-dwgdirect',
-            '--without-panorama',
             '--without-idb',
             '--without-sde',
             '--without-perl',
             '--without-php',
-            '--without-ruby',
             '--without-python',
-            '--without-ogpython',
             '--with-hide-internal-symbols'
         ]
 
