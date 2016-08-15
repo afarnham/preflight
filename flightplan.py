@@ -25,12 +25,13 @@ class FlightPlan(object):
         ]
         return default_options
 
-    def set_build_info(self, cache, working_directory, arch, platform, prefix):
+    def set_build_info(self, cache, working_directory, arch, platform, prefix, sysroot):
         self.cache = cache
         self.working_dir = working_directory
         self.arch = arch
         self.platform = platform
         self.prefix = prefix
+        self.sysroot = sysroot
 
     def get_version(self):
         raise NotImplementedError
@@ -71,7 +72,7 @@ class FlightPlan(object):
 
     def download_url(self, url):
         print "Downloading", url
-        curl_command = ['curl', '-O', '-#', url]
+        curl_command = ['curl', '-L', '-O', '-#', url]
         subprocess.check_call(curl_command)
 
     def unzip_to_path(input_zipfile, output_path):
@@ -81,6 +82,7 @@ class FlightPlan(object):
         raise NotImplementedError
 
     def unarchive(self, input_archive, output_dir, split_top_level_path):
+        print input_archive
         tf = tarfile.open(input_archive)
         top_level_dir = tf.firstmember.name
         if split_top_level_path:
@@ -108,6 +110,9 @@ class FlightPlan(object):
         return ''
 
     def cxxflags(self):
+        return ''
+
+    def cppflags(self):
         return ''
 
     def ldflags(self):
