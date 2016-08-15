@@ -12,7 +12,7 @@ IPHONE_PLATFORM = 'iphoneos'
 SIM_PLATFORM = 'iphonesimulator'
 DEFAULT_PREFIX_BASE = '~/iOS_lib'
 
-XCODE_7_DEFAULTS = {'xcode_version': 7.2,
+XCODE_7_DEFAULTS = {'xcode_version': 8.0,
 					'iphone_archs': ['armv7', 'arm64'],
 					'sim_archs': ['i386', 'x86_64'],
                     'min_deployment_version': '8.2'}
@@ -86,10 +86,16 @@ def get_ldflags(arch, platform):
 def get_cxxflags(arch, platform):
     return get_cflags(arch, platform)
 
+def get_cppflags(arch, platform):
+    return get_cflags(arch, platform)
+
 def get_c_preprocessor(platform):
     return subprocess.check_output(['xcrun', '-f', 'clang', '--sdk', platform]).strip() + ' -E' #'/usr/bin/clang -E'
 
 def get_cxx_preprocessor(platform):
+    return get_c_preprocessor(platform)
+
+def get_cpp_preprocessor(platform):
     return get_c_preprocessor(platform)
 
 def get_user_default_prefix():
@@ -113,7 +119,7 @@ def set_env(arch, platform, flightplan):
     CFLAGS = get_cflags(arch, platform)
     CFLAGS = ' '.join([CFLAGS, flightplan.cflags()])
     os.environ['CFLAGS']=CFLAGS
-    
+
     LDFLAGS = get_ldflags(arch, platform)
     LDFLAGS = ' '.join([LDFLAGS, flightplan.ldflags()])
     os.environ['LDFLAGS']=LDFLAGS
@@ -124,6 +130,10 @@ def set_env(arch, platform, flightplan):
     CXXFLAGS = get_cxxflags(arch, platform)
     CXXFLAGS = ' '.join([CXXFLAGS, flightplan.cxxflags()])
     os.environ['CXXFLAGS']=CXXFLAGS
+
+    CPPFLAGS = get_cppflags(arch, platform)
+    CPPFLAGS = ' '.join([CPPFLAGS, flightplan.cppflags()])
+    os.environ['CPPFLAGS']=CPPFLAGS
 
     CPP = get_c_preprocessor(platform)
     os.environ['CPP']=CPP
@@ -164,7 +174,7 @@ def print_env(arch, platform):
     print_env_var('CXXFLAGS', CXXFLAGS)
     print_env_var('CPP', CPP)
     print_env_var('CXXCPP', CXXCPP)
-    
+
 
 def build_flightplan(flightplan_name):
     flightplan_module = importlib.import_module('flightplans.{0}'.format(flightplan_name))
@@ -177,14 +187,14 @@ def build_flightplan(flightplan_name):
         build_flightplan(dep)
 
     print "-----------------------------------------"
-    
+
     for platform in get_platforms():
         for arch in architectures(platform):
-            set_env(arch, platform, flightplan)
             prefix = get_prefix(arch, platform)
             if not os.path.exists(prefix):
                 os.makedirs(prefix)
-            flightplan.set_build_info(cache, working_dir, arch, platform, get_prefix(arch, platform))
+            flightplan.set_build_info(cache, working_dir, arch, platform, get_prefix(arch, platform), get_sysroot(platform))
+            set_env(arch, platform, flightplan)
             flightplan.build_package()
     os.chdir(orig_path)
 
@@ -202,5 +212,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-            
-    
