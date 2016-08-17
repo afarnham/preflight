@@ -16,6 +16,7 @@ class GDALFlightPlan(FlightPlan):
 
     def package_options(self):
         return [
+            '--without-ld-shared',
             '--with-static-proj4={prefix}'.format(prefix=self.prefix),
             '--with-unix-stdio-64=no',
             '--with-sqlite3={prefix}'.format(prefix=self.prefix),
@@ -72,13 +73,13 @@ class GDALFlightPlan(FlightPlan):
         dst_dir = self.working_dir
         srcfile = os.path.join(src_dir, 'gdal_updated_files', 'config.guess')
         dstfile = os.path.join(dst_dir, 'config.guess')
-        shutil.copyfile(srcfile, dstfile)
+        #shutil.copyfile(srcfile, dstfile)
 
         srcfile = os.path.join(src_dir, 'gdal_updated_files', 'config.sub')
         dstfile = os.path.join(dst_dir, 'config.sub')
-        shutil.copyfile(srcfile, dstfile)
+        #shutil.copyfile(srcfile, dstfile)
 
-    def cflags(self):
-        return '-Wno-error=implicit-function-declaration' #fixes builds for 64-bit devices w/ clang
+    def cppflags(self):
+        return '-Wno-error=implicit-function-declaration -DHAVE_LONG_LONG=1' #fixes builds for 64-bit devices w/ clang
 
 FLIGHTPLAN_CLASS = GDALFlightPlan
