@@ -51,9 +51,16 @@ class FlightPlan(object):
     def clean_package(self):
         subprocess.call(['make', 'clean'])
 
+    def get_make_params(self):
+        return []
+        
     def make_package(self):
         #subprocess.call(['make', 'install'])
-        subprocess.call(['make'])
+        make_cmd = ['make']
+        make_params = self.get_make_params()
+        if len(make_params) > 0:
+            make_cmd.extend(make_params)
+        subprocess.call(make_cmd)
 
     def install_package(self):
         subprocess.call(['make', 'install'])

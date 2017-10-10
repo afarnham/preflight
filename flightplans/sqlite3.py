@@ -6,13 +6,16 @@ from flightplan import FlightPlan
 
 class SQLite3FlightPlan(FlightPlan):
     def get_version(self):
-        return '3.11.0'
+        return '3.20.1'
 
     def get_name(self):
         return 'sqlite3'
    
     def deps(self):
         return []
+
+    def get_make_params(self):
+        return ['libsqlite3.la']
 
     def package_options(self):
         return [
@@ -21,7 +24,7 @@ class SQLite3FlightPlan(FlightPlan):
 
     def get_resources(self):
         urls = [
-            'https://www.sqlite.org/2016/sqlite-autoconf-3110000.tar.gz'
+            'https://www.sqlite.org/2017/sqlite-autoconf-3200100.tar.gz'
         ]
         self.download_and_unarchive(urls)
         
@@ -38,6 +41,18 @@ class SQLite3FlightPlan(FlightPlan):
                  '-DSQLITE_THREADSAFE=1',
                  ]
     	return ' '.join(flags)
-    
+
+    def install_package(self):
+        '''Override the standard install_package() call because sqlite3 make install tries to build the sqlite3 shell too. 
+        The shell uses deprecated calls that fail to compile and cause this script to break'''
+        cwd = os.getcwd()
+        include_dir = self.prefix + '/include'
+        if not os.path.exists(include_dir):
+            os.makedirs(include_dir)
+        shutil.move(cwd + "/.libs/libsqlite3.a", self.prefix + "/libsqlite3.a")
+        shutil.move(cwd + "/sqlite3.h", include_dir + "/sqlite3.h")
+        shutil.move(cwd + "/sqlite3ext.h", include_dir + "/sqlite3ext.h")
+
+
 FLIGHTPLAN_CLASS = SQLite3FlightPlan
 
