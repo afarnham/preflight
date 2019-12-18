@@ -1,7 +1,7 @@
 import os
 import tempfile
 import shutil
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from flightplan import FlightPlan
 

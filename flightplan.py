@@ -2,7 +2,7 @@ import subprocess
 import os
 import tarfile
 import shutil
-from urlparse import urlparse
+from urllib.parse import urlparse
 import sys
 
 class FlightPlan(object):
@@ -72,13 +72,13 @@ class FlightPlan(object):
         opts = self._configure_options()
         if len(opts) > 0:
             configure_command.extend(self._configure_options())
-        print ' '.join(configure_command)
-        out = subprocess.check_output(configure_command)
+        print(' '.join(configure_command))
+        out = subprocess.check_output(configure_command).decode("utf-8") 
         self.make_package()
         self.install_package()
 
     def download_url(self, url):
-        print "Downloading", url
+        print("Downloading", url)
         curl_command = ['curl', '-L', '-O', '-#', url]
         subprocess.check_call(curl_command)
 
@@ -89,12 +89,12 @@ class FlightPlan(object):
         raise NotImplementedError
 
     def unarchive(self, input_archive, output_dir, split_top_level_path):
-        print input_archive
+        print(input_archive)
         tf = tarfile.open(input_archive)
         top_level_dir = tf.firstmember.name
         if split_top_level_path:
             top_level_dir = top_level_dir.split('/')[0]
-        print "Extracting", top_level_dir
+        print("Extracting", top_level_dir)
         tf.extractall()
         tf.close()
         shutil.rmtree(output_dir)

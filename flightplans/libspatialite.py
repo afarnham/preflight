@@ -36,8 +36,8 @@ class SpatialiteFlightPlan(FlightPlan):
         patch_file = 'libspatialite_' + self.get_version() + '.patch'
         patch_path = os.path.join(src_dir, patch_file)
         with open(patch_path) as f:
-            subprocess.call(['patch', '-p1'], stdin=f)
-
+            out = subprocess.check_call(['patch', '-d', self.working_dir, '-p1'], stdin=f)
+            print(out)
         #subprocess.call(['autoreconf'])
     
         dst_dir = self.working_dir

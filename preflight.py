@@ -6,7 +6,7 @@ import sys
 import subprocess
 import tempfile
 import shutil
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 IPHONE_PLATFORM = 'iphoneos'
 SIM_PLATFORM = 'iphonesimulator'
@@ -38,7 +38,7 @@ def append_options(compiler, arch, platform):
 
 
 def get_sysroot(platform):
-    sysroot = subprocess.check_output(['xcrun', '--show-sdk-path', '--sdk', platform])
+    sysroot = subprocess.check_output(['xcrun', '--show-sdk-path', '--sdk', platform]).decode("utf-8")
     return sysroot.strip()
 
 def get_system(platform):
@@ -76,7 +76,7 @@ def get_ldflags(arch, platform):
 #        xcode_path = subprocess.check_output(['xcode-select', '--print-path']).strip()
 #        sysroot = os.path.join(xcode_path, 'Platforms', platform + '.platform', 'Developer', 'SDKs', '{platform}{version}.sdk'.format(platform=platform, version=min_deployment_version()))
 #    else:
-    sysroot = subprocess.check_output(['xcrun', '--show-sdk-path', '--sdk', platform])
+    sysroot = subprocess.check_output(['xcrun', '--show-sdk-path', '--sdk', platform]).decode("utf-8")
     flags = "-arch {arch} -isysroot {sysroot} -L{prefix}/lib".format(arch=arch,
                                                                      sysroot=get_sysroot(platform),
                                                                      platform=platform,
@@ -90,7 +90,7 @@ def get_cppflags(arch, platform):
     return get_cflags(arch, platform)
 
 def get_c_preprocessor(platform):
-    return subprocess.check_output(['xcrun', '-f', 'clang', '--sdk', platform]).strip() + ' -E' #'/usr/bin/clang -E'
+    return subprocess.check_output(['xcrun', '-f', 'clang', '--sdk', platform]).decode("utf-8") .strip() + ' -E' #'/usr/bin/clang -E'
 
 def get_cxx_preprocessor(platform):
     return get_c_preprocessor(platform)
@@ -156,7 +156,7 @@ def cache_path():
 
 
 def print_env_var(varname, value):
-    print varname + '=' + "'" + value + "'"
+    print(varname + '=' + "'" + value + "'")
 
 def print_env(arch, platform):
 
@@ -186,7 +186,7 @@ def build_flightplan(flightplan_name):
     for dep in flightplan.deps():
         build_flightplan(dep)
 
-    print "-----------------------------------------"
+    print("-----------------------------------------")
 
     for platform in get_platforms():
         for arch in architectures(platform):
