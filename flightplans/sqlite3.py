@@ -6,7 +6,7 @@ from flightplan import FlightPlan
 
 class SQLite3FlightPlan(FlightPlan):
     def get_version(self):
-        return '3.20.1'
+        return '3.21.0'
 
     def get_name(self):
         return 'sqlite3'
@@ -24,7 +24,7 @@ class SQLite3FlightPlan(FlightPlan):
 
     def get_resources(self):
         urls = [
-            'https://www.sqlite.org/2017/sqlite-autoconf-3200100.tar.gz'
+            'https://www.sqlite.org/2017/sqlite-autoconf-3210000.tar.gz'
         ]
         self.download_and_unarchive(urls)
         
@@ -32,9 +32,10 @@ class SQLite3FlightPlan(FlightPlan):
     	flags = ['-DSQLITE_SOUNDEX', 
                  '-DSQLITE_ENABLE_RTREE',
                  '-DSQLITE_DEFAULT_MMAP_SIZE=0',
+                 '-DSQLITE_ENABLE_FTS5',
                  '-DSQLITE_ENABLE_FTS4_UNICODE61',
                  '-DSQLITE_ENABLE_FTS3_PARENTHESIS',
-                 '-DSQLITE_ENABLE_LOCKING_STYLE=1',
+                 '-DSQLITE_ENABLE_LOCKING_STYLE=0',
                  '-DSQLITE_OMIT_AUTORESET',
                  '-DSQLITE_OMIT_BUILTIN_TEST',
                  '-DSQLITE_TEMP_STORE=1',
