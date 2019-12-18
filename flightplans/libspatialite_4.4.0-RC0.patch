@@ -27,12 +27,34 @@ diff -Naur /Users/aaron/Downloads/libspatialite-4.4.0-RC0/src/gaiaaux/gg_utf8.c 
 -#if defined(__APPLE__) || defined(__ANDROID__)
 -    return locale_charset ();
 -#else /* neither Mac OsX nor Android */
-+//#if defined(__APPLE__) || defined(__ANDROID__)
-+//    return locale_charset ();
-+//#else /* neither Mac OsX nor Android */
++// #if defined(__APPLE__) || defined(__ANDROID__)
++//     return locale_charset ();
++// #else /* neither Mac OsX nor Android */
      return nl_langinfo (CODESET);
 -#endif
-+//#endif
++// #endif
  #endif
  }
  
+diff -Naur libspatialite-4.4.0-RC0/src/gaiageo/gg_shape.c libspatialite-4.4.0-RC0-mod/src/gaiageo/gg_shape.c
+--- libspatialite-4.4.0-RC0/src/gaiageo/gg_shape.c	2015-12-13 12:47:32.000000000 -0600
++++ libspatialite-4.4.0-RC0-mod/src/gaiageo/gg_shape.c	2019-12-18 13:48:37.000000000 -0600
+@@ -71,13 +71,13 @@
+ #include <localcharset.h>
+ #endif /* end localcharset */
+ #else /* not MINGW32 */
+-#if defined(__APPLE__) || defined(__ANDROID__)
+-#include <iconv.h>
+-#include <localcharset.h>
+-#else /* neither Mac OsX nor Android */
++//#if defined(__APPLE__) || defined(__ANDROID__)
++//#include <iconv.h>
++//#include <localcharset.h>
++//#else /* neither Mac OsX nor Android */
+ #include <iconv.h>
+ #include <langinfo.h>
+-#endif
++//#endif
+ #endif
+ 
+ #include <spatialite/sqlite.h>

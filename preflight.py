@@ -12,10 +12,10 @@ IPHONE_PLATFORM = 'iphoneos'
 SIM_PLATFORM = 'iphonesimulator'
 DEFAULT_PREFIX_BASE = '~/iOS_lib'
 
-XCODE_7_DEFAULTS = {'xcode_version': 8.0,
-					'iphone_archs': ['armv7', 'arm64'],
-					'sim_archs': ['i386', 'x86_64'],
-                    'min_deployment_version': '8.2'}
+XCODE_7_DEFAULTS = {'xcode_version': 11.3,
+					'iphone_archs': ['arm64'],
+					'sim_archs': ['x86_64'],
+                    'min_deployment_version': '11.0'}
 DEFAULT_XCODE = XCODE_7_DEFAULTS
 
 def min_deployment_version():
